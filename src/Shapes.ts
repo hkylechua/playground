@@ -13,15 +13,15 @@ interface Stroke {
   width: number;
 }
 
-export interface Circle extends Shape{
+export interface Circle {
   at: Coordinate;
   radius: number;
   color: string;
-  stroke: Stroke;
+  stroke?: Stroke;
   text: string;
 }
 
-export interface Line extends Shape {
+export interface Line {
   start: Coordinate;
   end: Coordinate;
   width: number;
@@ -41,9 +41,11 @@ export const circle = (options: Circle): Shape => { // Circle Function
     ctx.arc(options.at.x, options.at.y, options.radius, 0, Math.PI * 2);
     ctx.fillStyle = options.color;
     ctx.fill();
-    ctx.lineWidth = options.stroke.width;
-    ctx.strokeStyle = options.stroke.color;
-    ctx.stroke();
+    if (options.stroke) {
+      ctx.lineWidth = options.stroke.width;
+      ctx.strokeStyle = options.stroke.color;
+      ctx.stroke();
+    }
     ctx.fillStyle = "black"; // Text color
     ctx.fillText(options.text, options.at.x, options.at.y);
     ctx.closePath();
@@ -60,13 +62,13 @@ export const line = (options: Line): Shape => { // Line Function
     const distance =
       Math.abs(
         (options.end.y - options.start.y) * point.x -
-          (options.end.x - options.start.x) * point.y +
-          options.end.x * options.start.y -
-          options.end.y * options.start.x
+        (options.end.x - options.start.x) * point.y +
+        options.end.x * options.start.y -
+        options.end.y * options.start.x
       ) /
       Math.sqrt(
         (options.end.y - options.start.y) ** 2 +
-          (options.end.x - options.start.x) ** 2
+        (options.end.x - options.start.x) ** 2
       );
     return distance <= options.width / 2;
   };
